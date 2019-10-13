@@ -113,10 +113,10 @@ if (logged_in()) {
                 <div class="col s12 m5 login">
                     <h4 class="center">Log in</h4>
                     <br>
-                    <form id="login_form" name="login_form" method="post">
+                    <form id="login_form" name="login_form" method="post" autocomplete="off">
                         <div class="row">
                             <div class="input-field">
-                                <input type="text" id="celestaid" name="celestaid" class="validate" required="required" placeholder="Celesta ID">
+                                <input type="text" id="celestaid" name="celestaid" class="validate" required="required" autocomplete="off" placeholder="Celesta ID">
                                 <label for="user">
                                     <i class="material-icons">person</i> </label>
                             </div>
@@ -130,17 +130,17 @@ if (logged_in()) {
                             </div>
                         </div>
                         <div class="row">
-                            <div class="switch col s6">
-                                <label>
-                                    <input type="checkbox" name="remember" id="password">
-                                    <span class="lever"></span>
-                                    Remember Me
-                                </label>
-                            </div>
                             <div class="col s6">
-                                <button type="submit" name="login" id="login" class="btn waves-effect waves-light blue right">Log
+                                <button type="submit" name="login" id="login" class="btn waves-effect waves-light blue left">Log
                                     in</button>
                             </div>
+                            <div class=" col s6">
+                                <label><a href="./resend_activation.php">
+                                    <span class="btn waves-effect waves-light left">
+                                    Resend Activation Link</span></a>
+                                </label>
+                            </div>
+
                         </div>
                     </form>
                 </div>

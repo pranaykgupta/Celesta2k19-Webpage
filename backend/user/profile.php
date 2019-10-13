@@ -9,8 +9,22 @@
         $imgsrc = $_SESSION['qrcode'];
         $access_token=$_SESSION['access_token'];
     }
-    $data = ca_leaderboard();
+
+    $cadata = ca_leaderboard();
+    $data=array();
+    foreach($cadata as $cd){
+        $e=array();
+        $e['name']=$cd['first_name'] ." ". $cd['last_name'];
+        $e['celestaid']=$cd['celestaid'];
+        $e['excitons']=$cd['excitons'];
+        $e['gravitons']=$cd['gravitons'];
+        $e['points']=$cd['excitons']*1.5 + $cd['gravitons'];
+        array_push($data,$e);
+    }
+    $points = array_column($data, 'points');
+    array_multisort($points, SORT_DESC, $data);
     $profile = user_details($celestaid);
+    $user_registered_events = json_decode($profile['events_registered']);
 ?>
 
 <!DOCTYPE html>
@@ -84,11 +98,50 @@
 
                     </div>
 
+                    
+                    <div class="container">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-10">
+                                <h2 class="text-center" style="color: #fff">Events Registered</h2>
+                                <table class="table table-hover" style="color: #fff; background: rgba(0,0,0,.5)">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">S.No.</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Event ID</th>
+                                            <th scope="col">Is Team Event</th>
+                                            <th scope="col">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $i=1; foreach($user_registered_events as $ev) { ?>
+                                            <tr>
+                                                <th scope="row"><?php echo $i++; ?></th>
+                                                <td><?php echo $ev->ev_name ?></td>
+                                                <td><?php echo $ev->ev_id ?></td>
+                                                <td>
+                                                    <?php if(isset($ev->team_name)){ ?>
+                                                        Yes
+                                                    <?php }else {?>
+                                                        No
+                                                    <?php }?>
+                                                </td>
+                                                <td><?php echo $ev->amount ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <?php if($profile['isCA']) { ?>
                         <div class="container">
                             <div class="row d-flex justify-content-center">
                                 <div class="col-md-10">
                                     <h2 class="text-center" style="color: #fff">CA Leaderboard</h2>
+                                    <p class="text-center" style="color: #eee; font-size: 12px">Points = 1.5*Excitons + Gravitons</p>
                                     <table class="table table-hover" style="color: #fff; background: rgba(0,0,0,.5)">
                                         <thead>
                                             <tr>
@@ -101,22 +154,26 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php $i=1; foreach($data as $d) { ?>
+                                            <?php $i=1; foreach($data as $d) { 
+                                                if($i<=21){?>
+                                                
                                                 <tr>
                                                     <th scope="row"><?php echo $i++; ?></th>
-                                                    <td><?php echo $d['first_name'] ." ". $d['last_name'] ?></td>
+                                                    <td><?php echo $d['name'] ?></td>
                                                     <td><?php echo $d['celestaid'] ?></td>
                                                     <td><?php echo $d['excitons']*1.5 + $d['gravitons'] ?></td>
                                                     <td><?php echo $d['excitons'] ?></td>
                                                     <td><?php echo $d['gravitons'] ?></td>
                                                 </tr>
-                                            <?php } ?>
+                                            <?php }
+                                        } ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     <?php } ?>
+
                 </section>
             </div>
         </main>

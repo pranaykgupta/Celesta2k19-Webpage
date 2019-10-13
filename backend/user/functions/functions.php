@@ -413,6 +413,7 @@ function activate_user(){
 					Hi $first_name, you have successfully completed your CA registration process.<br>
 					Your celestaid is : <b>$celestaid</b><br>
 					Your referral id is: <b>$celestaid</b><br>
+					Please join the WhatsApp Group : <a href='https://chat.whatsapp.com/KiaTa2umQ2wKoDX6pzptXp'>https://chat.whatsapp.com/KiaTa2umQ2wKoDX6pzptXp</a>
 					Your qr code is: <img src='$qrcode'>
 					Or click here to get your qrcode : <a href='$qrcode'>$qrcode</a>
 					</p>
@@ -442,6 +443,63 @@ function activate_user(){
 	}
 }
 
+// Resend Activation Link
+function resendActivationLink(){
+	if($_SERVER['REQUEST_METHOD']=="POST"){
+		$email=escape($_POST['username']); // Email id of the user
+		$sql="SELECT active,id, validation_code,celestaid FROM users WHERE email='$email'";
+		$result=query($sql);
+		confirm($result);
+
+		$response=array();
+		$message=array();
+
+		if(row_count($result)==1){
+			$row=fetch_array($result);
+			$active=$row['active'];
+
+			if($active==1){
+				$message[]="Account already activated.";
+				$response['status']=208;
+			}else{
+				$celestaid=$row['celestaid'];
+				$validation_code=md5($celestaid.microtime());
+				$sql1="UPDATE users SET validation_code='$validation_code' WHERE email='$email'";
+				$result1=query($sql1);
+				confirm($result1);
+				$activation_link="https://celesta.org.in/backend/user/activate.php?email=$email&code=$validation_code";
+
+				if(isUserCA($email)){
+					$sql2="UPDATE ca_users SET validation_code='$validation_code' where email='$email'";
+					$result2=query($sql2);
+					$activation_link="https://celesta.org.in/backend/user/activate.php?email=$email&code=$validation_code&ca=campus_ambassador_celesta2k19";
+				}
+
+				$subject="Re-Activation Link";
+				$msg="<p>
+				Please click the link below to activate your celesta account and login.<br/>
+					<a href='$activation_link'>$activation_link</a>
+					</p>
+				";
+				$header="From: noreply@yourwebsite.com";
+				send_email($email,$subject,$msg,$header);
+				$message[]="Successfully resend the verification link";
+				$response['status']=200;
+				set_message("<p class='bg-success'> Activation link has successfully been sent to your account.</p>");
+				echo json_encode($response);
+				redirect("reg.php");
+			}
+		}else{
+			$message[]="Email not found.";
+			$response['status']=404;
+		}
+
+		$response['message']=$message;
+		echo json_encode($response);
+
+	}
+}
+
 //Validate user Login
 function validate_user_login(){
 	$errors=[];
@@ -467,6 +525,14 @@ function validate_user_login(){
 			return json_encode(array_merge(array("404"),$errors));
 		}else{
 			if(login_user($celestaid,$password,$remember)){
+				if(isset($_GET['redirecteventsdata'])){
+					redirect("../../events/eventsdata.php?data=".$_GET['redirecteventsdata']);
+					return 0;
+				}
+				if(isset($_GET['redirecteventsdetails'])){
+					redirect("../../events/eventsdetails.php?id=".$_GET['redirecteventsdetails']);
+					return 0;
+				}
 				redirect("profile.php");
 				return json_encode(array("400"));//User logged in
 			}else{
@@ -668,13 +734,13 @@ function reset_password(){
 							$result1=query($sql1);
 
 							//Updating in present database also, if the email exists
-							$sql2="SELECT id FROM present_users WHERE email='".escape($email)."' ";
-							$result2=query($sql2);
-							if(row_count($result2)==1){
-								$sql3="UPDATE present_users SET password='".$password."' WHERE email='".escape($email)."' ";
-								$result3=query($sql3);
-							}
-							
+							// $sql2="SELECT id FROM present_users WHERE email='".escape($email)."' ";
+							// $result2=query($sql2);
+							// if(row_count($result2)==1){
+							// 	$sql3="UPDATE present_users SET password='".$password."' WHERE email='".escape($email)."' ";
+							// 	$result3=query($sql3);
+							// }
+
 							set_message("<p class='bg-success text-center'> Your password has been resetted.</p>");
 							redirect("reg.php");
 						}else{
@@ -722,4 +788,3 @@ function user_details($celestaid){
 	}
 	return $data;
 }
-

@@ -28,12 +28,13 @@
     <div class="form-group">
         <label for="exampleFormControlSelect1">Category</label>
         <select class="form-control" id="event_category" name="event_category" required>
-        <option>Events</option>
         <option selected="selected"><?php echo $event['ev_category']?></option>
+        <option>Events</option>
+        <option>Schoolevents</option>
         <option>Workshops</option>
         <option>Exhibitions</option>
-        <option>ProNite</option>
-        <option>Guest Talks</option>
+        <option>Pronites</option>
+        <option>Guesttalks</option>
         </select>
     </div>
 
@@ -75,6 +76,19 @@
     </div>
 
     <div class="form-group">
+        <label for="exampleFormControlSelect1">Maximum no of team members (If its a team event)</label>
+        <select class="form-control" id="team_members" name="team_members" required>
+            <option selected="selected"><?php echo $event["team_members"] ?></option>
+            <option >1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="event_organizer">Event Description</label>
         <textarea type="text" class="form-control" id="event_desc" name="event_desc" placeholder="Write about the event"rows="3"  ><?php echo $event['ev_description']?></textarea>
     </div>
@@ -87,6 +101,11 @@
     <div class="form-group">
         <label for="event_organizer">Event Venue</label>
         <input type="text" class="form-control" id="event_venue" name="event_venue" placeholder="Venue of the event"  value="<?php echo $event['ev_venue']?>" >
+    </div>
+
+    <div class="form-group">
+        <label for="event_organizer">Map URL of Venue</label>
+        <input type="text" class="form-control" id="map_url" name="map_url" placeholder="Map url of the venue"  value="<?php echo $event['map_url']?>" >
     </div>
 
     <div class="form-group">

@@ -24,10 +24,11 @@
         <label for="exampleFormControlSelect1">Category</label>
         <select class="form-control" id="event_category" name="event_category" required>
         <option>Events</option>
+        <option>Schoolevents</option>
         <option>Workshops</option>
         <option>Exhibitions</option>
-        <option>ProNite</option>
-        <option>Guest Talks</option>
+        <option>Pronites</option>
+        <option>Guesttalks</option>
         </select>
     </div>
 
@@ -73,6 +74,18 @@
     </div>
 
     <div class="form-group">
+        <label for="exampleFormControlSelect1">Maximum no of team members (If its a team event)</label>
+        <select class="form-control" id="team_members" name="team_members" required>
+            <option selected="selected">1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="event_organizer">Event Date</label>
         <input type="text" class="form-control" id="event_date" name="event_date" placeholder="Date of the event" required>
     </div>
@@ -80,6 +93,11 @@
     <div class="form-group">
         <label for="event_organizer">Event Venue</label>
         <input type="text" class="form-control" id="event_venue" name="event_venue" placeholder="Venue of the event" required>
+    </div>
+
+    <div class="form-group">
+        <label for="event_organizer">Map URL of Venue</label>
+        <input type="text" class="form-control" id="map_url" name="map_url" placeholder="Map url of the venue" >
     </div>
 
     <div class="form-group">

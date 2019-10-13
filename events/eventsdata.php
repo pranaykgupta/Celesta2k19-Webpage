@@ -3,8 +3,8 @@
     $loggedIn = logged_in();
     $celestaid=""; $access_token="";
     if(logged_in()){
-        $celestaid = $_SESSION['celestaid'];
-        $access_token=$_SESSION['access_token'];
+      $celestaid = $_SESSION['celestaid'];
+      $access_token=$_SESSION['access_token'];
     }
 ?>
 
@@ -17,9 +17,9 @@
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
   $curl_response = curl_exec($curl);
   if ($curl_response === false) {
-      $info = curl_getinfo($curl);
-      curl_close($curl);
-      die('error occured during curl exec. Additioanl info: ' . var_export($info));
+    $info = curl_getinfo($curl);
+    curl_close($curl);
+    die('error occured during curl exec. Additioanl info: ' . var_export($info));
   }
   curl_close($curl);
   $data = json_decode($curl_response, true);
@@ -27,11 +27,21 @@
   $events=array();
   foreach($data as $d){
     if($d['ev_category']==ucfirst($param)){
-      array_push($events, $d);
+      array_push($events,$d);
     }
   }
   $filters="";
   if($param=="events"){
+    $filters='
+      <li data-filter=".filter-TECH">TECH</li>
+      <li data-filter=".filter-NON-TECH">NON-TECH</li>
+      <li data-filter=".filter-CODING">CODING</li>
+      <li data-filter=".filter-MANAGEMENT">MANAGEMENT</li>
+      <li data-filter=".filter-ROBOTICS">ROBOTICS</li>
+      <li data-filter=".filter-QUIZ">QUIZ</li>
+      <li data-filter=".filter-TREASURE-HUNT">TREASURE-HUNT</li>
+    ';
+  }elseif($param=="schoolevents"){
     $filters='
       <li data-filter=".filter-TECH">TECH</li>
       <li data-filter=".filter-NON-TECH">NON-TECH</li>
@@ -124,11 +134,15 @@
                       <h4><?php echo $e['ev_name']?></h4>
                       <p>
                         <a class="btn" style="color: #fff; background: rgb(148,0,211,.8); font-size: 12px" href="./eventsdetails.php?id=<?php echo $e['ev_id']?>">More Details</a> 
-                        <!-- <?php if($loggedIn){?>
-                        <a class="btn" style="color: #fff; background: 	rgb(139,0,139,.8); font-size: 12px" href="../backend/admin/functions/register_event.php?eventid=<?php echo $e['ev_id']?>&celestaid=<?php echo $celestaid ?>&access_token=<?php echo $access_token?>">Register Event</a>
+                        <?php if($loggedIn){?>
+                          <?php if (!$e['is_team_event']) { ?>
+                            <a class="btn btn-success" style="color: #fff; background: rgb(139,0,139,.8); font-size: 12px" href="./eventsdetails.php?id=<?php echo $e['ev_id']?>">Register Event</a>
+                          <?php } else { ?>
+                            <a class="btn btn-success" style="color: #fff; background: rgb(139,0,139,.8); font-size: 12px" href="./eventsdetails.php?id=<?php echo $e['ev_id']?>">Register Team Event</a>
+                          <?php } ?>
                         <?php }else{?>
-                        <a class="btn" style="color: #fff; background: 	rgb(139,0,139,.8); font-size: 12px" href="./../backend/user/reg.php">Login to Register</a>
-                        <?php }?> -->
+                          <a class="btn" style="color: #fff; background: 	rgb(139,0,139,.8); font-size: 12px" href="./../backend/user/reg.php?redirecteventsdata=<?php echo $param?>">Login to Register</a>
+                        <?php }?>
 
                       </p>
                     </div>
